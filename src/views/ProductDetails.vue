@@ -50,10 +50,10 @@
               <span class="rating-text">{{ product.rating }} out of 5</span>
             </div>
             
-            <div class="product-price">${{ product.price.toFixed(2) }}</div>
+            <div class="product-price">${{ (product.price / 100).toFixed(2) }}</div>
             
             <div class="product-availability">
-              <span v-if="product.inStock" class="in-stock">✓ In Stock</span>
+              <span v-if="product.quantity > 0" class="in-stock">✓ In Stock ({{ product.quantity }} available)</span>
               <span v-else class="out-of-stock">✗ Out of Stock</span>
             </div>
             
@@ -61,31 +61,32 @@
               <div class="quantity-selector">
                 <button 
                   @click="decrementQuantity" 
-                  :disabled="quantity <= 1" 
+                  :disabled="quantity <= 1 || product.quantity === 0" 
                   class="quantity-btn"
                 >-</button>
                 <span class="quantity">{{ quantity }}</span>
                 <button 
                   @click="incrementQuantity" 
+                  :disabled="quantity >= product.quantity"
                   class="quantity-btn"
                 >+</button>
               </div>
               
               <button 
-                class="add-to-cart-btn" 
-                @click="addToCart" 
-                :disabled="!product.inStock"
+                class="add-to-basket-btn" 
+                @click="addToBasket" 
+                :disabled="product.quantity === 0"
               >
-                Add to Cart
+                Add to Basket
               </button>
             </div>
             
-            <div class="product-description">
+            <div class="product-description" v-if="product.description">
               <h3>Description</h3>
               <p>{{ product.description }}</p>
             </div>
             
-            <div class="product-features">
+            <div class="product-features" v-if="product.features && product.features.length">
               <h3>Features</h3>
               <ul>
                 <li v-for="(feature, index) in product.features" :key="index">
@@ -103,6 +104,7 @@
 <script>
 import { ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { getProduct, getCategories, createBasket, addToBasket as addToBasketApi } from '@/services/api'
 
 export default {
   name: 'ProductDetails',
@@ -118,30 +120,29 @@ export default {
     const error = ref(null)
     const quantity = ref(1)
     const categories = ref([])
+    const adding = ref(false)
     const route = useRoute()
     const router = useRouter()
+
+    // Get or create basket ID
+    const getBasketId = () => {
+      let basketId = localStorage.getItem('basketId')
+      if (!basketId) {
+        return createBasket().then(basket => {
+          basketId = basket.id
+          localStorage.setItem('basketId', basketId)
+          return basketId
+        })
+      }
+      return Promise.resolve(basketId)
+    }
 
     // Function to fetch product details
     const fetchProduct = async (productId) => {
       try {
         loading.value = true
         error.value = null
-        
-        // Import products from local JSON file
-        const response = await import('@/data/products.json')
-        const products = response.default
-        
-        // Find product by ID
-        const productId = parseInt(props.id)
-        const foundProduct = products.find(p => p.id === productId)
-        
-        if (foundProduct) {
-          product.value = foundProduct
-          console.log('Product loaded:', product.value)
-        } else {
-          error.value = 'Product not found!'
-        }
-        
+        product.value = await getProduct(productId)
         loading.value = false
       } catch (err) {
         console.error('Error loading product:', err)
@@ -153,8 +154,7 @@ export default {
     // Load categories for breadcrumb
     const loadCategories = async () => {
       try {
-        const response = await import('@/data/categories.json')
-        categories.value = response.default
+        categories.value = await getCategories()
       } catch (err) {
         console.error('Error loading categories:', err)
       }
@@ -168,7 +168,9 @@ export default {
 
     // Increment quantity
     const incrementQuantity = () => {
-      quantity.value++
+      if (quantity.value < product.value.quantity) {
+        quantity.value++
+      }
     }
 
     // Decrement quantity
@@ -178,42 +180,24 @@ export default {
       }
     }
 
-    // Add product to cart
-    const addToCart = () => {
-      if (!product.value || !product.value.inStock) return
+    // Add product to basket
+    const addToBasket = async () => {
+      if (!product.value || product.value.quantity === 0 || adding.value) return
       
-      // Get current cart from localStorage
-      let cartItems = []
-      const storedCart = localStorage.getItem('cartItems')
-      
-      if (storedCart) {
-        cartItems = JSON.parse(storedCart)
+      try {
+        adding.value = true
+        const basketId = await getBasketId()
+        await addToBasketApi(basketId, product.value.id, quantity.value)
+        
+        // Show confirmation and navigate to basket
+        alert(`${quantity.value} ${product.value.name}${quantity.value > 1 ? 's' : ''} added to your basket!`)
+        router.push('/basket')
+      } catch (err) {
+        console.error('Error adding to basket:', err)
+        error.value = 'Failed to add item to basket. Please try again.'
+      } finally {
+        adding.value = false
       }
-      
-      // Check if product already exists in cart
-      const existingItemIndex = cartItems.findIndex(item => item.productId === product.value.id)
-      
-      if (existingItemIndex !== -1) {
-        // If product exists, update quantity
-        cartItems[existingItemIndex].quantity += quantity.value
-      } else {
-        // If not, add new item to cart
-        cartItems.push({
-          id: Date.now(), // Unique identifier for cart item
-          productId: product.value.id,
-          name: product.value.name,
-          price: product.value.price,
-          image: product.value.image,
-          quantity: quantity.value
-        })
-      }
-      
-      // Update localStorage
-      localStorage.setItem('cartItems', JSON.stringify(cartItems))
-      
-      // Show confirmation and navigate to cart
-      alert(`${quantity.value} ${product.value.name}${quantity.value > 1 ? 's' : ''} added to your cart!`)
-      router.push('/cart')
     }
 
     // Watch for changes in product ID
@@ -233,10 +217,11 @@ export default {
       loading,
       error,
       quantity,
+      adding,
       getCategoryName,
       incrementQuantity,
       decrementQuantity,
-      addToCart
+      addToBasket
     }
   }
 }
@@ -371,54 +356,49 @@ export default {
 .quantity-selector {
   display: flex;
   align-items: center;
+  gap: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  overflow: hidden;
+  padding: 5px;
 }
 
 .quantity-btn {
-  background-color: #f0f0f0;
+  background: none;
   border: none;
-  padding: 8px 15px;
   font-size: 18px;
   cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.quantity-btn:hover:not(:disabled) {
-  background-color: #e0e0e0;
+  padding: 0 10px;
+  color: #666;
 }
 
 .quantity-btn:disabled {
-  opacity: 0.5;
+  color: #ccc;
   cursor: not-allowed;
 }
 
 .quantity {
-  padding: 0 15px;
-  font-size: 16px;
-  min-width: 40px;
+  min-width: 30px;
   text-align: center;
+  font-size: 16px;
 }
 
-.add-to-cart-btn {
-  flex-grow: 1;
+.add-to-basket-btn {
+  flex: 1;
   background-color: #ff7eb8;
   color: white;
   border: none;
-  border-radius: 4px;
   padding: 10px 20px;
-  font-size: 16px;
-  font-weight: 500;
+  border-radius: 4px;
   cursor: pointer;
+  font-weight: 500;
   transition: background-color 0.2s;
 }
 
-.add-to-cart-btn:hover:not(:disabled) {
+.add-to-basket-btn:hover:not(:disabled) {
   background-color: #e66da3;
 }
 
-.add-to-cart-btn:disabled {
+.add-to-basket-btn:disabled {
   background-color: #ccc;
   cursor: not-allowed;
 }
@@ -430,32 +410,24 @@ export default {
 .product-description h3, .product-features h3 {
   font-size: 18px;
   margin-bottom: 10px;
-  font-weight: 500;
-}
-
-.product-description p {
-  line-height: 1.6;
-  color: #555;
 }
 
 .product-features ul {
   list-style-type: none;
-  padding-left: 5px;
+  padding: 0;
 }
 
 .product-features li {
-  position: relative;
+  margin-bottom: 5px;
   padding-left: 20px;
-  margin-bottom: 8px;
-  line-height: 1.4;
+  position: relative;
 }
 
-.product-features li::before {
-  content: '✓';
+.product-features li:before {
+  content: "•";
   position: absolute;
   left: 0;
   color: #ff7eb8;
-  font-weight: bold;
 }
 
 @media (max-width: 768px) {

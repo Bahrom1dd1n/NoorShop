@@ -16,8 +16,8 @@
         </div>
       </div>
       <div class="product-price">${{ product.price.toFixed(2) }}</div>
-      <button class="add-to-cart-btn" @click="addToCart">
-        Add to Cart
+      <button class="add-to-cart-btn" @click="addToBasket">
+        Add to Basket
       </button>
     </div>
   </div>
@@ -25,6 +25,7 @@
 
 <script>
 import { useRouter } from 'vue-router'
+import { createBasket, addToBasket as addToBasketApi } from '@/services/api'
 
 export default {
   name: 'ProductCard',
@@ -44,46 +45,34 @@ export default {
       router.push(`/product/${props.product.id}`)
     }
     
-    // Function to add product to cart
-    const addToCart = () => {
-      console.log(`Adding product to cart: ${props.product.id}`)
-      
-      // Get current cart from localStorage
-      let cartItems = []
-      const storedCart = localStorage.getItem('cartItems')
-      
-      if (storedCart) {
-        cartItems = JSON.parse(storedCart)
+    // Function to add product to basket
+    const addToBasket = async () => {
+      try {
+        // Get or create basket ID
+        let basketId = localStorage.getItem('basketId')
+        if (!basketId) {
+          const basket = await createBasket()
+          basketId = basket.id
+          localStorage.setItem('basketId', basketId)
+        }
+        
+        // Add product to basket
+        await addToBasketApi(basketId, props.product.id, 1)
+        
+        // Show confirmation message
+        alert(`${props.product.name} has been added to your basket!`)
+        
+        // Optionally navigate to basket
+        router.push('/basket')
+      } catch (error) {
+        console.error('Error adding to basket:', error)
+        alert('Failed to add item to basket. Please try again.')
       }
-      
-      // Check if product already exists in cart
-      const existingItemIndex = cartItems.findIndex(item => item.productId === props.product.id)
-      
-      if (existingItemIndex !== -1) {
-        // If product exists, increment quantity
-        cartItems[existingItemIndex].quantity++
-      } else {
-        // If not, add new item to cart
-        cartItems.push({
-          id: Date.now(), // Unique identifier for cart item
-          productId: props.product.id,
-          name: props.product.name,
-          price: props.product.price,
-          image: props.product.image,
-          quantity: 1
-        })
-      }
-      
-      // Update localStorage
-      localStorage.setItem('cartItems', JSON.stringify(cartItems))
-      
-      // Optional: Show confirmation message or update UI
-      alert(`${props.product.name} has been added to your cart!`)
     }
     
     return {
       viewProductDetails,
-      addToCart
+      addToBasket
     }
   }
 }

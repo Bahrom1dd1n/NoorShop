@@ -4,7 +4,7 @@
     <div class="container header-container">
       <div class="logo-container">
         <router-link to="/" class="logo">
-          <div class="cart-icon">🛒</div>
+          <div class="basket-icon">🛒</div>
           <span>NoorShop</span>
         </router-link>
       </div>
@@ -37,9 +37,9 @@
           <router-link to="/my-orders" class="nav-btn">
             <span>📦 My Orders</span>
           </router-link>
-          <router-link to="/cart" class="nav-btn">
-            <span>🛒 Cart</span>
-            <span v-if="cartCount > 0" class="cart-count">{{ cartCount }}</span>
+          <router-link to="/basket" class="nav-btn">
+            <span>🛒 Basket</span>
+            <span v-if="basketCount > 0" class="basket-count">{{ basketCount }}</span>
           </router-link>
         </nav>
       </div>
@@ -66,12 +66,12 @@ export default {
   setup() {
     const searchQuery = ref('')
     const showCategorySidebar = ref(false)
-    const cartItems = ref([])
+    const basketItems = ref([])
     const router = useRouter()
 
-    // Computed property to get cart count
-    const cartCount = computed(() => {
-      return cartItems.value.reduce((total, item) => total + item.quantity, 0)
+    // Computed property to get basket count
+    const basketCount = computed(() => {
+      return basketItems.value.reduce((total, item) => total + item.quantity, 0)
     })
 
     // Function to search products
@@ -89,35 +89,25 @@ export default {
       showCategorySidebar.value = true
     }
 
-    // Load cart data on component mount
+    // Load basket data on component mount
     onMounted(() => {
-      loadCartData()
+      loadBasketData()
     })
 
-    // Function to load cart data from localStorage
-    const loadCartData = () => {
-      const storedCart = localStorage.getItem('cartItems')
-      if (storedCart) {
-        cartItems.value = JSON.parse(storedCart)
+    // Function to load basket data from localStorage
+    const loadBasketData = () => {
+      const storedBasket = localStorage.getItem('basketItems')
+      if (storedBasket) {
+        basketItems.value = JSON.parse(storedBasket)
       } else {
-        // If no cart in localStorage, use the test data
-        import('@/data/cart.json')
-          .then(data => {
-            cartItems.value = data.default
-            // Save to localStorage for future use
-            localStorage.setItem('cartItems', JSON.stringify(cartItems.value))
-          })
-          .catch(error => {
-            console.error('Error loading cart data:', error)
-            cartItems.value = []
-          })
+        basketItems.value = []
       }
     }
 
     return {
       searchQuery,
       showCategorySidebar,
-      cartCount,
+      basketCount,
       searchProducts,
       openCategorySidebar
     }
@@ -156,7 +146,7 @@ export default {
   font-weight: bold;
 }
 
-.cart-icon {
+.basket-icon {
   margin-right: 8px;
   font-size: 20px;
 }
@@ -228,7 +218,7 @@ export default {
   background-color: #e9e9e9;
 }
 
-.cart-count {
+.basket-count {
   position: absolute;
   top: -5px;
   right: -5px;

@@ -47,6 +47,7 @@
 <script>
 import { ref, computed, watch, onMounted } from 'vue'
 import ProductCard from '@/components/ProductCard.vue'
+import { getProducts, getCategories } from '@/services/api'
 
 export default {
   name: 'Home',
@@ -78,9 +79,7 @@ export default {
     const loadProducts = async () => {
       try {
         loading.value = true
-        // Import products from local JSON file
-        const response = await import('@/data/products.json')
-        products.value = response.default
+        products.value = await getProducts()
         loading.value = false
         console.log('Products loaded:', products.value.length)
       } catch (err) {
@@ -93,8 +92,7 @@ export default {
     // Load categories for category name display
     const loadCategories = async () => {
       try {
-        const response = await import('@/data/categories.json')
-        categories.value = response.default
+        categories.value = await getCategories()
         updateCategoryName()
       } catch (err) {
         console.error('Error loading categories:', err)
@@ -129,17 +127,13 @@ export default {
         const query = props.searchQuery.toLowerCase()
         result = result.filter(product => 
           product.name.toLowerCase().includes(query) || 
-          product.description.toLowerCase().includes(query)
+          (product.description && product.description.toLowerCase().includes(query))
         )
       }
       
       // Filter by category
       if (props.categorySlug) {
         result = result.filter(product => product.category === props.categorySlug)
-        
-        // If we have a subcategory, we would filter further
-        // Note: This would require subcategory to be part of product data
-        // For now, we'll just filter by main category
       }
       
       return result
@@ -201,76 +195,51 @@ export default {
 }
 
 .shop-now-btn {
-  background-color: #50ff50;
-  color: #000;
-  font-weight: bold;
+  background-color: white;
+  color: #9c3ce7;
+  font-weight: 600;
   padding: 12px 24px;
-  font-size: 18px;
-  border-radius: 30px;
+  border-radius: 25px;
+  text-decoration: none;
+  transition: transform 0.2s;
 }
 
 .shop-now-btn:hover {
-  background-color: #3ecc3e;
+  transform: scale(1.05);
 }
 
 .hero-image {
   flex: 1;
-  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative;
+  padding: 20px;
 }
 
 .hero-image img {
-  max-width: 70%;
-  max-height: 70%;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
 }
 
 .section-title {
-  margin: 20px 0;
-  border-bottom: 1px solid #e0e0e0;
-  padding-bottom: 10px;
+  margin: 30px 0;
+  text-align: center;
 }
 
 .section-title h2 {
-  font-size: 24px;
-  font-weight: 600;
+  font-size: 32px;
   color: #333;
+  font-weight: 600;
 }
 
 .loading-container, .error-container, .no-products {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 300px;
+  text-align: center;
+  padding: 40px;
   color: #666;
-  font-size: 18px;
 }
 
 .error-container {
-  color: #d9534f;
-}
-
-@media (max-width: 768px) {
-  .hero-banner {
-    flex-direction: column;
-    height: auto;
-  }
-  
-  .hero-content {
-    padding: 20px;
-    text-align: center;
-  }
-  
-  .hero-content h1 {
-    font-size: 32px;
-  }
-  
-  .hero-image {
-    width: 100%;
-    padding: 20px;
-  }
+  color: #dc3545;
 }
 </style>
