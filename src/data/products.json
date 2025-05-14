@@ -1,0 +1,257 @@
+[
+  {
+    "id": 1,
+    "name": "AULA F75 Mechanical Keyboard 2.4G Wireless",
+    "price": 107.99,
+    "rating": 4,
+    "image": "/images/products/keyboard-green.jpg",
+    "category": "electronics",
+    "description": "High-quality mechanical keyboard with 2.4G wireless connection, with Cherry MX switches for optimal typing experience. Features RGB backlight, programmable keys, and long battery life.",
+    "features": [
+      "2.4G Wireless Technology",
+      "Cherry MX Switches",
+      "RGB Backlight",
+      "Programmable Keys",
+      "Long Battery Life"
+    ],
+    "inStock": true
+  },
+  {
+    "id": 2,
+    "name": "S-Series Comfort Chair Ergonomic Luxury",
+    "price": 349.99,
+    "rating": 5,
+    "image": "/images/products/chair.jpg",
+    "category": "furniture",
+    "description": "Ergonomic office chair designed for maximum comfort during long work sessions. Features adjustable height, lumbar support, and premium fabric upholstery.",
+    "features": [
+      "Adjustable Height",
+      "Lumbar Support",
+      "Premium Fabric Upholstery",
+      "Ergonomic Design",
+      "360-Degree Swivel"
+    ],
+    "inStock": true
+  },
+  {
+    "id": 3,
+    "name": "Wireless headphones Pods Pro 2",
+    "price": 149.99,
+    "rating": 4.5,
+    "image": "/images/products/headphones.jpg",
+    "category": "electronics",
+    "description": "Premium wireless earbuds with active noise cancellation, spatial audio, and up to 6 hours of battery life. Water and sweat resistant for workouts.",
+    "features": [
+      "Active Noise Cancellation",
+      "Spatial Audio",
+      "6 Hours Battery Life",
+      "Water and Sweat Resistant",
+      "Touch Controls"
+    ],
+    "inStock": true
+  },
+  {
+    "id": 4,
+    "name": "Laptop Bag 13.3 15.6 14 INCH Waterproof Notebook",
+    "price": 67.99,
+    "rating": 4.5,
+    "image": "/images/products/laptop-bag.jpg",
+    "category": "accessories",
+    "description": "Waterproof laptop bag compatible with various laptop sizes. Features multiple compartments, shoulder strap, and reinforced padding for protection.",
+    "features": [
+      "Waterproof Material",
+      "Multiple Compartments",
+      "Shoulder Strap",
+      "Reinforced Padding",
+      "Fits 13.3\", 14\", and 15.6\" Laptops"
+    ],
+    "inStock": true
+  },
+  {
+    "id": 5,
+    "name": "Step Drill Bit HSS Straight Groove Titanium",
+    "price": 53.99,
+    "rating": 4.5,
+    "image": "/images/products/drill-bits.jpg",
+    "category": "tools",
+    "description": "High-speed steel step drill bits with titanium coating for longer life. Perfect for drilling in metal, plastic, and wood.",
+    "features": [
+      "Titanium Coating",
+      "High-Speed Steel",
+      "Multiple Size Steps",
+      "Straight Groove Design",
+      "Carrying Case Included"
+    ],
+    "inStock": true
+  },
+  {
+    "id": 6,
+    "name": "Fast Charging Power Bank 10000mAh",
+    "price": 79.99,
+    "rating": 4,
+    "image": "/images/products/power-bank.jpg",
+    "category": "electronics",
+    "description": "Portable power bank with 10000mAh capacity and fast charging capabilities. Compatible with most smartphones and small electronic devices.",
+    "features": [
+      "10000mAh Capacity",
+      "Fast Charging",
+      "Multiple Ports",
+      "Compact Design",
+      "LED Indicator"
+    ],
+    "inStock": true
+  },
+  {
+    "id": 7,
+    "name": "Professional Soccer Cleats",
+    "price": 129.99,
+    "rating": 4.5,
+    "image": "/images/products/soccer-cleats.jpg",
+    "category": "sports",
+    "description": "Professional-grade soccer cleats with superior grip and comfort. Designed for performance on both natural and artificial turf.",
+    "features": [
+      "Superior Grip",
+      "Lightweight Design",
+      "Comfortable Fit",
+      "Durable Construction",
+      "Available in Multiple Colors"
+    ],
+    "inStock": true
+  },
+  {
+    "id": 8,
+    "name": "Professional Blender 1000W",
+    "price": 159.99,
+    "rating": 4.5,
+    "image": "/images/products/blender.jpg",
+    "category": "kitchen",
+    "description": "Powerful 1000W blender with multiple speed settings and a large capacity jar. Perfect for smoothies, soups, and more.",
+    "features": [
+      "1000W Motor",
+      "Multiple Speed Settings",
+      "Large Capacity Jar",
+      "Stainless Steel Blades",
+      "Easy to Clean"
+    ],
+    "inStock": true
+  },
+  {
+    "id": 9,
+    "name": "SanDisk Ultra Memory Card 100MB/s",
+    "price": 29.99,
+    "rating": 4.5,
+    "image": "/images/products/memory-card.jpg",
+    "category": "electronics",
+    "description": "High-speed memory card with 100MB/s transfer speed. Available in various capacities for your storage needs.",
+    "features": [
+      "100MB/s Transfer Speed",
+      "Reliable Storage",
+      "Temperature Proof",
+      "X-ray Proof",
+      "Waterproof"
+    ],
+    "inStock": true
+  },
+  {
+    "id": 10,
+    "name": "Razer Gaming Mouse",
+    "price": 59.99,
+    "rating": 4.5,
+    "image": "/images/products/gaming-mouse.jpg",
+    "category": "electronics",
+    "description": "High-performance gaming mouse with customizable RGB lighting and programmable buttons. Features precise optical sensor for accurate tracking.",
+    "features": [
+      "16000 DPI Optical Sensor",
+      "Programmable Buttons",
+      "RGB Lighting",
+      "Ergonomic Design",
+      "Durable Switches"
+    ],
+    "inStock": true
+  },
+  {
+    "id": 11,
+    "name": "Wireless Keyboard and Mouse Combo",
+    "price": 49.99,
+    "rating": 4,
+    "image": "/images/products/keyboard-mouse.jpg",
+    "category": "electronics",
+    "description": "Wireless keyboard and mouse combo for a clutter-free desk setup. Features low-profile keys and comfortable mouse design.",
+    "features": [
+      "Wireless Technology",
+      "Low-Profile Keys",
+      "Comfortable Mouse Design",
+      "Long Battery Life",
+      "Compatible with Multiple OS"
+    ],
+    "inStock": true
+  },
+  {
+    "id": 12,
+    "name": "DSLR Camera with 18-55mm Lens",
+    "price": 699.99,
+    "rating": 4.5,
+    "image": "/images/products/camera.jpg",
+    "category": "electronics",
+    "description": "Digital SLR camera with 18-55mm lens for capturing high-quality photos and videos. Features multiple shooting modes and built-in flash.",
+    "features": [
+      "24.1MP Sensor",
+      "Full HD Video Recording",
+      "Multiple Shooting Modes",
+      "Built-in Flash",
+      "Includes 18-55mm Lens"
+    ],
+    "inStock": true
+  },
+  {
+    "id": 13,
+    "name": "13.3-inch Laptop Sleeve",
+    "price": 29.99,
+    "rating": 4,
+    "image": "/images/products/laptop-sleeve.jpg",
+    "category": "accessories",
+    "description": "Protective sleeve for 13.3-inch laptops. Features water-resistant material and padded interior for maximum protection.",
+    "features": [
+      "Water-Resistant Material",
+      "Padded Interior",
+      "Fits 13.3-inch Laptops",
+      "Slim Design",
+      "Available in Multiple Colors"
+    ],
+    "inStock": true
+  },
+  {
+    "id": 14,
+    "name": "Running Shoes",
+    "price": 89.99,
+    "rating": 4.5,
+    "image": "/images/products/running-shoes.jpg",
+    "category": "sports",
+    "description": "Comfortable running shoes with cushioned insole and breathable upper. Perfect for jogging, running, and casual wear.",
+    "features": [
+      "Cushioned Insole",
+      "Breathable Upper",
+      "Durable Outsole",
+      "Lightweight Design",
+      "Available in Multiple Sizes"
+    ],
+    "inStock": true
+  },
+  {
+    "id": 15,
+    "name": "24-inch Monitor Full HD",
+    "price": 199.99,
+    "rating": 4.5,
+    "image": "/images/products/monitor.jpg",
+    "category": "electronics",
+    "description": "24-inch Full HD monitor with IPS panel for vibrant colors and wide viewing angles. Features multiple connectivity options.",
+    "features": [
+      "24-inch Full HD Display",
+      "IPS Panel",
+      "Multiple Connectivity Options",
+      "Adjustable Stand",
+      "Eye-Care Technology"
+    ],
+    "inStock": true
+  }
+]

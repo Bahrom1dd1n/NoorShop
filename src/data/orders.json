@@ -1,0 +1,24 @@
+[
+  {
+    "id": "order-001",
+    "name": "Wireless Mouse",
+    "price": 25.99,
+    "date": "2025-04-01",
+    "image": "/images/wireless-mouse.jpg"
+  },
+  {
+    "id": "order-002",
+    "name": "Bluetooth Headphones",
+    "price": 64.00,
+    "date": "2025-04-12",
+    "image": "/images/bluetooth-headphones.jpg"
+  },
+  {
+    "id": "order-003",
+    "name": "USB-C Charger",
+    "price": 22.75,
+    "date": "2025-05-01",
+    "image": "/images/usb-c-charger.jpg"
+  }
+]
+

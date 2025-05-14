@@ -1,0 +1,11 @@
+<template>
+  <div class="app">
+    <h1>App Loaded</h1>
+    <Header />
+    <main class="main-content">
+      <router-view />
+    </main>
+    <Footer />
+  </div>
+</template>
+

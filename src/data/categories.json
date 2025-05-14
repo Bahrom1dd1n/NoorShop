@@ -1,0 +1,145 @@
+[
+  {
+    "id": 1,
+    "name": "Electronics",
+    "slug": "electronics",
+    "icon": "computer",
+    "subcategories": [
+      {
+        "id": 101,
+        "name": "Computers & Laptops",
+        "slug": "computers-laptops"
+      },
+      {
+        "id": 102,
+        "name": "Mobile Phones",
+        "slug": "mobile-phones"
+      },
+      {
+        "id": 103,
+        "name": "Audio & Headphones",
+        "slug": "audio-headphones"
+      },
+      {
+        "id": 104,
+        "name": "Keyboards & Mice",
+        "slug": "keyboards-mice"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Furniture",
+    "slug": "furniture",
+    "icon": "chair",
+    "subcategories": [
+      {
+        "id": 201,
+        "name": "Office Chairs",
+        "slug": "office-chairs"
+      },
+      {
+        "id": 202,
+        "name": "Desks",
+        "slug": "desks"
+      },
+      {
+        "id": 203,
+        "name": "Sofas",
+        "slug": "sofas"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Kitchen",
+    "slug": "kitchen",
+    "icon": "kitchen",
+    "subcategories": [
+      {
+        "id": 301,
+        "name": "Blenders & Mixers",
+        "slug": "blenders-mixers"
+      },
+      {
+        "id": 302,
+        "name": "Coffee Makers",
+        "slug": "coffee-makers"
+      },
+      {
+        "id": 303,
+        "name": "Cookware",
+        "slug": "cookware"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Sports",
+    "slug": "sports",
+    "icon": "sports",
+    "subcategories": [
+      {
+        "id": 401,
+        "name": "Soccer",
+        "slug": "soccer"
+      },
+      {
+        "id": 402,
+        "name": "Basketball",
+        "slug": "basketball"
+      },
+      {
+        "id": 403,
+        "name": "Fitness",
+        "slug": "fitness"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Accessories",
+    "slug": "accessories",
+    "icon": "accessories",
+    "subcategories": [
+      {
+        "id": 501,
+        "name": "Laptop Bags",
+        "slug": "laptop-bags"
+      },
+      {
+        "id": 502,
+        "name": "Phone Cases",
+        "slug": "phone-cases"
+      },
+      {
+        "id": 503,
+        "name": "Chargers & Cables",
+        "slug": "chargers-cables"
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Tools",
+    "slug": "tools",
+    "icon": "tools",
+    "subcategories": [
+      {
+        "id": 601,
+        "name": "Power Tools",
+        "slug": "power-tools"
+      },
+      {
+        "id": 602,
+        "name": "Hand Tools",
+        "slug": "hand-tools"
+      },
+      {
+        "id": 603,
+        "name": "Measuring Tools",
+        "slug": "measuring-tools"
+      }
+    ]
+  }
+]
