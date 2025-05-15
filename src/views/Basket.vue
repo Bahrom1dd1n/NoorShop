@@ -54,32 +54,31 @@
             </div>
             
             <div class="item-total">
-              ${{ (item.price * item.quantity).toFixed(2) }}
+              <div class="total-price">${{ (item.price * item.quantity).toFixed(2) }}</div>
+              <button 
+                @click="purchaseItem(item)" 
+                :disabled="updating"
+                class="purchase-btn"
+              >
+                Purchase Now
+              </button>
             </div>
           </div>
         </div>
         
         <div class="cart-summary">
-          <h3>Order Summary</h3>
+          <h3>Basket Summary</h3>
           <div class="summary-row">
-            <span>Subtotal</span>
+            <span>Total Items</span>
+            <span>{{ basketItems.length }}</span>
+          </div>
+          <div class="summary-row">
+            <span>Total Value</span>
             <span>${{ subtotal.toFixed(2) }}</span>
           </div>
-          <div class="summary-row">
-            <span>Shipping</span>
-            <span>Free</span>
+          <div class="help-text">
+            Click "Purchase Now" on individual items to buy them separately.
           </div>
-          <div class="summary-row total">
-            <span>Total</span>
-            <span>${{ subtotal.toFixed(2) }}</span>
-          </div>
-          <button 
-            @click="checkout" 
-            :disabled="updating"
-            class="checkout-btn"
-          >
-            Proceed to Checkout
-          </button>
         </div>
       </div>
     </div>
@@ -89,7 +88,7 @@
 <script>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { getBasketProducts, updateBasketProduct, removeFromBasket, createBasket } from '@/services/api'
+import { getBasketProducts, updateBasketProduct, removeFromBasket, createBasket, createOrder } from '@/services/api'
 
 export default {
   name: 'Basket',
@@ -131,7 +130,7 @@ export default {
     const loadBasket = async () => {
       try {
         loading.value = true
-        error.value = null // Reset error state
+        error.value = null
         
         const basketId = await getBasketId()
         if (!basketId) {
@@ -140,13 +139,10 @@ export default {
           return
         }
 
-        console.log('Loading basket with ID:', basketId); // Debug log
-        
         const products = await getBasketProducts(basketId)
-        console.log('Loaded basket products:', products); // Debug log
         
         if (!Array.isArray(products)) {
-          console.error('Invalid products response:', products);
+          console.error('Invalid products response:', products)
           error.value = 'Invalid response from server'
           loading.value = false
           return
@@ -167,13 +163,9 @@ export default {
       
       try {
         updating.value = true
-        console.log('Attempting to update quantity:', {
-          itemId,
-          newQuantity,
-          basketId: localStorage.getItem('basketId')
-        });
-        await updateBasketProduct(itemId, newQuantity)
-        await loadBasket() // Reload basket to get updated data
+        // For now, we'll just show an alert since backend doesn't support quantity updates
+        alert('Quantity update is not supported yet. Please remove the item and add it again with the desired quantity.')
+        await loadBasket() // Reload basket to refresh the view
       } catch (err) {
         console.error('Error updating quantity:', err)
         error.value = 'Failed to update quantity. Please try again.'
@@ -198,10 +190,35 @@ export default {
       }
     }
 
-    // Checkout function
-    const checkout = () => {
-      // Here you would typically integrate with a payment processor
-      alert('Checkout functionality will be implemented soon!')
+    // Purchase individual item
+    const purchaseItem = async (item) => {
+      if (updating.value) return
+
+      try {
+        updating.value = true
+        
+        // Create order with proper price calculation
+        await createOrder(
+          item.productId,
+          null, // Using guest user ID
+          item.quantity,
+          item.price // Price is already in dollars, API will convert to cents
+        )
+
+        // Remove item from basket after successful purchase
+        await removeFromBasket(item.id)
+        
+        // Show success message
+        alert(`Thank you for your purchase! ${item.quantity} x ${item.name} has been ordered.`)
+        
+        // Reload basket to update the view
+        await loadBasket()
+      } catch (err) {
+        console.error('Error during purchase:', err)
+        error.value = 'Failed to complete purchase. Please try again.'
+      } finally {
+        updating.value = false
+      }
     }
 
     // Load basket data on component mount
@@ -217,7 +234,7 @@ export default {
       subtotal,
       updateQuantity,
       removeItem,
-      checkout
+      purchaseItem
     }
   }
 }
@@ -344,8 +361,46 @@ export default {
 }
 
 .item-total {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.total-price {
   font-size: 18px;
   font-weight: 500;
+}
+
+.purchase-btn {
+  background-color: #ff7eb8;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.purchase-btn:hover:not(:disabled) {
+  background-color: #e66da3;
+}
+
+.purchase-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.help-text {
+  margin-top: 20px;
+  color: #666;
+  font-size: 14px;
+  text-align: center;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
 }
 
 .cart-summary {
@@ -366,33 +421,6 @@ export default {
   justify-content: space-between;
   margin-bottom: 15px;
   color: #666;
-}
-
-.summary-row.total {
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid #eee;
-  color: #333;
-  font-size: 18px;
-  font-weight: 500;
-}
-
-.checkout-btn {
-  width: 100%;
-  background-color: #ff7eb8;
-  color: white;
-  border: none;
-  padding: 15px;
-  border-radius: 4px;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  margin-top: 20px;
-  transition: background-color 0.2s;
-}
-
-.checkout-btn:hover {
-  background-color: #e66da3;
 }
 
 @media (max-width: 768px) {

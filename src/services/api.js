@@ -200,4 +200,39 @@ export const getBasketProducts = async (basketId) => {
   }
 };
 
+export const createOrder = async (productId, userId, quantity, totalPrice) => {
+  try {
+    const response = await api.post('/order', {
+      productid: productId,
+      userid: userId || "00000000-0000-0000-0000-000000000000",
+      quantity: quantity,
+      total_price: totalPrice * 100
+    });
+    return response.data.Data;
+  } catch (error) {
+    console.error('Error creating order:', error);
+    throw error;
+  }
+};
+
+export const getOrders = async () => {
+  try {
+    const response = await api.get('/orders');
+    const orders = response.data.Data?.Orders || response.data.Data || [];
+    
+    return orders.map(order => ({
+      id: order.id,
+      name: order.product_name || '',
+      totalPrice: order.total_price / 100,
+      quantity: order.quantity,
+      orderDate: order.order_date,
+      image: order.image || '/images/placeholder.jpg',
+      productId: order.productID
+    }));
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    throw error;
+  }
+};
+
 export default api; 

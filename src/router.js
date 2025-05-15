@@ -1,11 +1,14 @@
 // src/router.js
 import { createRouter, createWebHistory } from 'vue-router'
+import { authService } from '@/services/auth'
 
 // Import views
 import Home from '@/views/Home.vue'
 import ProductDetails from '@/views/ProductDetails.vue'
 import MyOrders from '@/views/MyOrders.vue'
 import Basket from '@/views/Basket.vue'
+import Login from '@/views/Login.vue'
+import Signup from '@/views/Signup.vue'
 
 // Define routes
 const routes = [
@@ -15,9 +18,22 @@ const routes = [
     component: Home
   },
   {
+    path: '/login',
+    name: 'Login',
+    component: Login,
+    meta: { requiresGuest: true }
+  },
+  {
+    path: '/signup',
+    name: 'Signup',
+    component: Signup,
+    meta: { requiresGuest: true }
+  },
+  {
     path: '/basket',
     name: 'Basket',
-    component: Basket
+    component: Basket,
+    meta: { requiresAuth: true }
   },
   {
     path: '/product/:id',
@@ -28,7 +44,8 @@ const routes = [
   {
     path: '/my-orders',
     name: 'MyOrders',
-    component: MyOrders
+    component: MyOrders,
+    meta: { requiresAuth: true }
   },
   {
     path: '/search',
@@ -56,6 +73,19 @@ const router = createRouter({
   // Scroll to top on route change
   scrollBehavior() {
     return { top: 0 }
+  }
+})
+
+// Navigation guard
+router.beforeEach((to, from, next) => {
+  const isAuthenticated = authService.isAuthenticated()
+
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    next('/login')
+  } else if (to.meta.requiresGuest && isAuthenticated) {
+    next('/')
+  } else {
+    next()
   }
 })
 

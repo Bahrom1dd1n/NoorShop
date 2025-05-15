@@ -9,7 +9,7 @@
         </router-link>
       </div>
 
-      <div class="search-container">
+      <div v-if="!isAuthPage" class="search-container">
         <input
           type="text"
           placeholder="Search"
@@ -22,19 +22,28 @@
       </div>
 
       <div class="account-container">
-        <router-link to="/account" class="account-link">
-          <span>👤 Account</span>
+        <div v-if="isAuthenticated" class="account-dropdown">
+          <button class="account-button" @click="toggleDropdown">
+            <span>👤 Account</span>
+          </button>
+          <div v-if="showDropdown" class="dropdown-menu">
+            <router-link to="/my-orders" class="dropdown-item">My Orders</router-link>
+            <button @click="handleLogout" class="dropdown-item">Logout</button>
+          </div>
+        </div>
+        <router-link v-else to="/login" class="account-link">
+          <span>👤 Login</span>
         </router-link>
       </div>
     </div>
 
-    <div class="nav-container">
+    <div v-if="!isAuthPage" class="nav-container">
       <div class="container">
         <nav class="main-nav">
           <button class="nav-btn" @click="openCategorySidebar">
             <span>📋 Categories</span>
           </button>
-          <router-link to="/my-orders" class="nav-btn">
+          <router-link v-if="isAuthenticated" to="/my-orders" class="nav-btn">
             <span>📦 My Orders</span>
           </router-link>
           <router-link to="/basket" class="nav-btn">
@@ -55,8 +64,9 @@
 
 <script>
 import { ref, onMounted, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import CategorySidebar from './CategorySidebar.vue'
+import { authService } from '@/services/auth'
 
 export default {
   name: 'Header',
@@ -64,10 +74,22 @@ export default {
     CategorySidebar
   },
   setup() {
+    const router = useRouter()
+    const route = useRoute()
     const searchQuery = ref('')
     const showCategorySidebar = ref(false)
     const basketItems = ref([])
-    const router = useRouter()
+    const showDropdown = ref(false)
+
+    // Computed property to check if current page is auth page
+    const isAuthPage = computed(() => {
+      return route.path === '/login' || route.path === '/signup'
+    })
+
+    // Computed property to check if user is authenticated
+    const isAuthenticated = computed(() => {
+      return authService.isAuthenticated()
+    })
 
     // Computed property to get basket count
     const basketCount = computed(() => {
@@ -89,6 +111,18 @@ export default {
       showCategorySidebar.value = true
     }
 
+    // Function to toggle account dropdown
+    const toggleDropdown = () => {
+      showDropdown.value = !showDropdown.value
+    }
+
+    // Function to handle logout
+    const handleLogout = () => {
+      authService.logout()
+      showDropdown.value = false
+      router.push('/login')
+    }
+
     // Load basket data on component mount
     onMounted(() => {
       loadBasketData()
@@ -104,12 +138,28 @@ export default {
       }
     }
 
+    // Close dropdown when clicking outside
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.account-dropdown')) {
+        showDropdown.value = false
+      }
+    }
+
+    onMounted(() => {
+      document.addEventListener('click', handleClickOutside)
+    })
+
     return {
       searchQuery,
       showCategorySidebar,
       basketCount,
+      isAuthPage,
+      isAuthenticated,
+      showDropdown,
       searchProducts,
-      openCategorySidebar
+      openCategorySidebar,
+      toggleDropdown,
+      handleLogout
     }
   }
 }
@@ -231,5 +281,48 @@ export default {
   align-items: center;
   justify-content: center;
   font-size: 12px;
+}
+
+.account-dropdown {
+  position: relative;
+}
+
+.account-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 5px 10px;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  min-width: 150px;
+  z-index: 1000;
+}
+
+.dropdown-item {
+  display: block;
+  padding: 10px 15px;
+  color: #333;
+  text-decoration: none;
+  transition: background-color 0.2s;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-size: 16px;
+}
+
+.dropdown-item:hover {
+  background-color: #f5f5f5;
 }
 </style>
